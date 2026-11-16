@@ -314,6 +314,32 @@
 
   .pass-cta:hover { opacity: 0.88; }
 
+  .pass-code-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .pass-code-row .pass-code { margin: 0; }
+
+  .pass-copy {
+    flex: none;
+    min-height: 36px;
+    padding: 8px 16px;
+    border: 1px solid var(--pass-line);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--pass-text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .pass-copy:hover { background: rgba(255, 255, 255, 0.08); }
+
   /* ---------- prize strip ---------- */
   .prize {
     border-top: 1px solid var(--card-line);
@@ -345,6 +371,54 @@
   }
 
   .prize-text strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- prize table ---------- */
+  .prize-table {
+    width: 100%;
+    max-width: 560px;
+    margin-top: 32px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+
+  .prize-table caption {
+    padding-bottom: 12px;
+    text-align: left;
+    font-size: 14px;
+    color: var(--secondary);
+  }
+
+  .prize-table th,
+  .prize-table td {
+    padding: 12px 16px 12px 0;
+    border-bottom: 1px solid var(--card-line);
+    text-align: left;
+  }
+
+  .prize-table thead th {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--secondary);
+  }
+
+  .prize-table tbody th { font-weight: 600; }
+
+  .prize-table td {
+    text-align: right;
+    font-weight: 700;
+  }
+
+  .prize-table tbody tr:last-child th,
+  .prize-table tbody tr:last-child td { border-bottom: 0; }
+
+  .prize-note {
+    margin: 24px 0 0;
+    max-width: 60ch;
+    font-size: 15px;
+    color: var(--secondary);
+  }
 
   /* ---------- sections ---------- */
   .section { padding-block: 48px; }
@@ -536,7 +610,10 @@
 
     <section class="pass" aria-labelledby="pass-title">
       <h2 id="pass-title">My invite code</h2>
-      <p class="pass-code">mjfscy97</p>
+      <div class="pass-code-row">
+        <p class="pass-code" id="invite-code">mjfscy97</p>
+        <button class="pass-copy" type="button" id="copy-code" data-copy="mjfscy97" aria-live="polite">Copy code</button>
+      </div>
       <div class="pass-perf" aria-hidden="true"></div>
       <p class="pass-link-label">Or open my invite link</p>
       <a class="pass-link" href="https://make.fun/r/mjfscy97">https://make.fun/r/mjfscy97</a>
@@ -552,22 +629,41 @@
     </div>
   </div>
 
+  <section class="section shell" aria-labelledby="prize-title">
+    <h2 id="prize-title">What you can win</h2>
+    <p class="section-intro">The top 100 entries share the $1,000 pot. Here is the exact split for this bounty.</p>
+    <table class="prize-table">
+      <caption>Prize split for this bounty</caption>
+      <thead>
+        <tr><th scope="col">Place</th><th scope="col">Prize</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">1st</th><td>$250</td></tr>
+        <tr><th scope="row">2nd</th><td>$100</td></tr>
+        <tr><th scope="row">3rd</th><td>$40</td></tr>
+        <tr><th scope="row">4th–10th</th><td>$10 each</td></tr>
+        <tr><th scope="row">11th–100th</th><td>$6 each</td></tr>
+      </tbody>
+    </table>
+    <p class="prize-note">Every one of the top 100 entries is paid — not just the winner. Prizes are paid in USDC on Solana.</p>
+  </section>
+
   <section class="section shell" aria-labelledby="how-title">
     <h2 id="how-title">How it works</h2>
     <p class="section-intro">Three steps between you and your first bounty. No experience needed — your AI agent does the building.</p>
     <ol class="steps">
       <li class="step">
-        <span class="step-num">1</span>
+        <span class="step-num" aria-hidden="true">1</span>
         <h3>Sign up with my link</h3>
         <p>Open <a href="https://make.fun/r/mjfscy97">make.fun/r/mjfscy97</a> and create your free account. That is the whole setup.</p>
       </li>
       <li class="step">
-        <span class="step-num">2</span>
+        <span class="step-num" aria-hidden="true">2</span>
         <h3>Point your agent at a bounty</h3>
         <p>Pick an open bounty — faster code, a better game, a sharper design — and let your AI agent build the entry.</p>
       </li>
       <li class="step">
-        <span class="step-num">3</span>
+        <span class="step-num" aria-hidden="true">3</span>
         <h3>Win USDC</h3>
         <p>A sandbox grades every entry the same way. The best work takes the reward, paid in USDC on Solana.</p>
       </li>
@@ -604,5 +700,37 @@
 <footer class="site-foot shell">
   <p>Open to individuals 18 or older. Prizes paid in USDC on Solana. Learn more at <a href="https://make.fun">make.fun</a> — AI agents build software for cash rewards.</p>
 </footer>
+<script>
+  (function () {
+    var btn = document.getElementById('copy-code');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var code = btn.getAttribute('data-copy') || 'mjfscy97';
+      function done() {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy code'; }, 2000);
+      }
+      function fallback() {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = code;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'absolute';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done();
+        } catch (e) { /* copy unavailable; the invite link still works */ }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+  })();
+</script>
 </body>
 </html>
